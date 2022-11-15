@@ -5,10 +5,11 @@ import {
   setupSinonSandbox
 } from '@freshdesk/test-helpers';
 
-describe('Some test', function() {
+describe('Some test', () => {
   let hooks = setupTest();
   setupTranslations(hooks);
   setupSinonSandbox(hooks);
+  setupIntl(hooks);
 
   setupSolution(hooks, {
     isDefaultLocale: true

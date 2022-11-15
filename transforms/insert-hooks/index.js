@@ -14,7 +14,8 @@ module.exports = function transformer(file, api) {
     'setupMirage',
     'setupSinonSandbox',
     'setupOverlay',
-    'setupRouteActions'
+    'setupRouteActions',
+    'setupIntl',
   ];
 
   const hookCallbacks = ['beforeEach', 'afterEach'];

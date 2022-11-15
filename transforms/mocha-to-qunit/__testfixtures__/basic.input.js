@@ -7,6 +7,8 @@ describe('Integration | Component', function() {
   let hooks = setupApplicationTest();
   setupTest();
   setupWindowMock(hooks);
+  setupIntl();
+  setupMirage();
 
   it('basic expect statements', async function() {
     // Simple true validation

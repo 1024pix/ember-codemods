@@ -10,6 +10,8 @@ module('Integration | Component', function(hooks) {
   setupApplicationTest(hooks);
   setupTest(hooks);
   setupWindowMock(hooks);
+  setupIntl(hooks);
+  setupMirage(hooks);
 
   test('basic expect statements', async function(assert) {
     // Simple true validation

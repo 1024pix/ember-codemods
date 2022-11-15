@@ -37,6 +37,8 @@ module.exports = function transformer(file, api) {
 
   const setupTestTypes = [
     'setupTest',
+    'setupIntl',
+    'setupMirage',
     'setupRenderingTest',
     'setupApplicationTest',
     'setupRenderingForModule',
