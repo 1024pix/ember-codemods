@@ -46,26 +46,25 @@ function setupCallbackHooks(hooks, name, j, root) {
   root.find(j.CallExpression, { callee: { name }})
     .filter((path) => {
       let actualPath = path.node.arguments[1];
-      let isNestedModule = findIdentifier(actualPath, name, j, root).length === 0;
-      let hasHooks = hooks.some((name) => {
-        return !(findIdentifier(path, name, j, root).length === 0);
+      let hasHooks = hooks.some((hookName) => {
+        return !(findIdentifier(path, hookName, j, root).length === 0);
       });
-      return (isNestedModule && hasHooks);
+      return hasHooks;
     })
     .forEach((path) => {
       j(path).find(j.ExpressionStatement)
         .filter((path) => {
-          return hooks.some((name) => {
-            return !(findIdentifier(path, name, j, root).length === 0);
+          return hooks.some((hookName) => {
+            return !(findIdentifier(path, hookName, j, root).length === 0);
           });
         })
         .forEach(({node}) => {
           let callee = node.expression.callee;
           let name = callee.name;
-
-          callee.name = `hooks.${name}`;
+          if (name !== 'module') {
+            callee.name = `hooks.${name}`;
+          }
         });
-
         return path.node.arguments[1].params = ['hooks'];
     });
 }

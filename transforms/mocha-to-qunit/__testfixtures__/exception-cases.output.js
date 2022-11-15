@@ -32,6 +32,14 @@ module('Integration | Component', function(hooks) {
   setupTest(hooks);
   setupWindowMock(hooks);
 
+  hooks.before(function() {
+    // Testing for before
+  });
+
+  hooks.beforeEach(function() {
+    // Testing for beforeEach with hooks
+  });
+
   module('Context test turns to module', function(hooks) {
 
     hooks.before(function() {
