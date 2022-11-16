@@ -66,6 +66,8 @@ module.exports = function transformer(file, api) {
   setupCallbackHooks(callbackHooks, 'module', j, root);
   removeChaiImports(j, root);
 
+  addAssertOkAfterSinonAssert(j, root);
+
   return beautifyImports(
     root.toSource({
       quote: 'single',
@@ -235,5 +237,37 @@ module.exports = function transformer(file, api) {
     }
 
     return matchedExpression;
+  }
+
+  function addAssertOkAfterSinonAssert(j, root) {
+    const memberExpressions = root.find(j.MemberExpression, {
+      object: {
+        name: 'sinon'
+      },
+      property: {
+        name: 'assert',
+      }
+    });
+    memberExpressions.forEach((memberExpression) => {
+      const blockExpression = memberExpression.get().parent.parent.parent.parent;
+      if (!blockExpression) {
+        return;
+      }
+      const founded = j(blockExpression).find(j.MemberExpression, { object: { name: 'assert'}, property: { name: 'ok' } });
+      if (founded.length !== 0) {
+        return;
+      }
+
+      const assertCall = j.expressionStatement(
+        j.callExpression(
+          j.memberExpression(
+            j.identifier('assert'),
+            j.identifier('ok')
+          ),
+          [j.identifier('true')]
+        )
+      );
+      blockExpression.value.body.push(assertCall);
+    });
   }
 }
