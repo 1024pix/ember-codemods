@@ -7,7 +7,8 @@ const matcherTransformer = require('./matcher-transformer');
 const {
   cleanupImports,
   setupHooksForTest,
-  setupCallbackHooks
+  setupCallbackHooks,
+  removeChaiImports,
 } = require('../cleanup-imports');
 const beautifyImports = require('../beautify-imports');
 const {
@@ -63,6 +64,7 @@ module.exports = function transformer(file, api) {
   cleanupImports(j, root);
   setupHooksForTest(setupTestTypes, j, root);
   setupCallbackHooks(callbackHooks, 'module', j, root);
+  removeChaiImports(j, root);
 
   return beautifyImports(
     root.toSource({

@@ -102,11 +102,17 @@ function cleanupImports(j, root) {
   removeDuplicateImports(j, root);
 }
 
+function removeChaiImports(j, root) {
+  root.find(j.ImportDeclaration, { source: { value: 'chai'} })
+    .remove();
+}
+
 module.exports = {
   cleanupImports,
   cleanupBlankImports,
   removeUnusedImportSpecifiers,
   removeDuplicateImports,
   setupHooksForTest,
-  setupCallbackHooks
+  setupCallbackHooks,
+  removeChaiImports,
 }

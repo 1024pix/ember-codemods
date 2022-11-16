@@ -6,6 +6,7 @@ import { run } from '@ember/runloop';
 import {
   SWITCHER_OPTIONS as switcherOptions
 } from 'freshdesk/constants/automations';
+import toto from 'chai';
 
 let name = faker.name.firstName();
 
