@@ -13,6 +13,7 @@ const {
 const beautifyImports = require('../beautify-imports');
 const {
   findExpect,
+  findSinonAssert,
   renameIdentifiers,
   renameImports
 } = require('./utils');
@@ -149,6 +150,10 @@ module.exports = function transformer(file, api) {
     return (findExpect(path, j).length > 0);
   }
 
+  function pathHasSinonAssert(path) {
+    return (findSinonAssert(path, j).length > 0);
+  }
+
   function removeDoneMethod(path) {
     j(path).find(j.Identifier, { name: 'done' })
       .closest(j.AwaitExpression)
@@ -159,7 +164,7 @@ module.exports = function transformer(file, api) {
   }
 
   function transformerTests(path) {
-    if(pathHasExpects(path)) {
+    if(pathHasExpects(path) || pathHasSinonAssert(path) ) {
       path.node.params = ['assert'];
       removeDoneMethod(path);
     }

@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 
 module('Integration | Component', function() {
-  test('basic expect statements', async function() {
+  test('basic expect statements', async function(assert) {
     const toto = 'ma superbe variable';
 
     await maFonction();

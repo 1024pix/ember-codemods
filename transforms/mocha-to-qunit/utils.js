@@ -41,6 +41,17 @@ function findExpect(path, j) {
   });
 }
 
+function findSinonAssert(path, j) {
+  return j(path).find(j.MemberExpression, {
+    object: {
+      name: 'sinon'
+    },
+    property: {
+      name: 'assert',
+    }
+  });
+}
+
 function findNegation(path, j) {
   let notIdentifier = j(path).find(j.Identifier, {
     name: 'not'
@@ -160,6 +171,7 @@ module.exports = {
   hasValue,
   joinParams,
   findExpect,
+  findSinonAssert,
   extractExpect,
   constructDomExists,
   constructDomAssertions,
