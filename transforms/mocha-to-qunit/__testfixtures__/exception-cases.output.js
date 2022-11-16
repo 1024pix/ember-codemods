@@ -110,5 +110,13 @@ module('Integration | Component', function(hooks) {
         assert.equal(item, true);
       });
     });
+
+    [{
+      test: '', result: '',
+    }].forEach(({ test, result }) => {
+      test(`Expect ${test} a nested block`, function(assert) {
+        assert.equal(result, true);
+      });
+    });
   });
 });

@@ -115,5 +115,13 @@ describe('Integration | Component', function() {
       // Will this be a problem
       done();
     });
+
+    [{
+      test: '', result: '',
+    }].forEach(({ test, result }) => {
+      it(`Expect ${test} a nested block`, function() {
+        expect(result).to.be.true;
+      });
+    });
   });
 });
