@@ -62,7 +62,7 @@ module('Integration | Component', function(hooks) {
     // Variations in dom assertions
     assert.dom('[data-test-id=page-title]').exists();
     assert.dom('[data-test-id=page-title]').doesNotExist();
-    assert.includes(find('[data-test-id=page-title]').getAttribute('href'), '/some/url');
+    assert.ok(find('[data-test-id=page-title]').getAttribute('href').includes('/some/url'));
     assert.equal(find('[data-test-id=page-title]').className.includes('active'), true);
     assert.ok(find('[data-test-id=page-titles]').querySelector('[data-test-id=page-title]'));
   });
@@ -95,26 +95,15 @@ module('Integration | Component', function(hooks) {
 
   // 'expected-contains'
   test('Contains expects expected-contains', function(assert) {
-    assert.includes('Message has input', 'input');
-    assert.includes([1, 2], 2);
-    assert.includes('Message has input', 'input', 'Assertions Message');
-    assert.includes('Message has input', 'input');
-    assert.includes('Message has input', 'input');
+    assert.notOk([1, 2].includes(2));
+    assert.notOk('Message has input'.includes('input'));
+    assert.notOk('Message'.includes('input'), 'Assertions Message');
+    assert.ok('Message has input'.includes('input'), 'Assertions Message');
+    assert.ok('Message has input'.includes('input'));
 
-    assert.includes('Message has input', 'input');
-    assert.includes('Message has input', 'input');
-    assert.includes([1, 2], 2);
-    assert.includes([1, 2], 2);
-    assert.includes('Message has input', 'input');
-    assert.includes(['name', 'customFields.custom_company_text_field'], i.name);
-    // Should handle this edge cases
-    // expect(options).to.be.an('array').to.not.include(serviceTaskType);
-    // Not contains
-    assert.notIncludes('Message', 'input');
-    assert.notIncludes('Message', 'input', 'Assertions Message');
-    assert.notIncludes('Message', 'input');
-    assert.notIncludes('Message', 'input', 'Assertions Message');
-    assert.notIncludes('Message', 'input');
+    // Not include
+    assert.ok('Message has input'.includes('input'));
+    assert.notOk('Message'.includes('input'));
   });
 
   // expected-closeto

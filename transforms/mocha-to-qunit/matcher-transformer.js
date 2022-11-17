@@ -189,10 +189,8 @@ module.exports = [{
     var { assertArgumentSource, assertMessage, hasShouldNot } = extractExpect(path, j);
     var expectedArgument = j(expression.arguments).toSource();
 
-    var assertMethod = hasShouldNot ? 'notIncludes' : 'includes';
-    var assertArguments = (expression.callee.property.name === 'oneOf')
-                          ? joinParams(expectedArgument, assertArgumentSource, assertMessage)
-                          : joinParams(assertArgumentSource, expectedArgument, assertMessage);
+    var assertMethod = hasShouldNot ? 'notOk' : 'ok';
+    var assertArguments = joinParams(`${assertArgumentSource}.includes(${expectedArgument})`, assertMessage);
 
     return `assert.${assertMethod}(${assertArguments});`;
   }

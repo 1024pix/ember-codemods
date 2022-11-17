@@ -92,26 +92,15 @@ describe('Integration | Component', function() {
 
   // 'expected-contains'
   it('Contains expects expected-contains', function() {
-    expect('Message has input').to.be.contains('input');
-    expect([1, 2]).to.be.contain(2);
-    expect('Message has input', 'Assertions Message').to.have.contain('input');
-    expect('Message has input').to.be.contain('input');
+    expect([1, 2]).not.to.contain(2);
+    expect('Message has input').to.not.contain('input');
+    expect('Message', 'Assertions Message').to.not.contains('input');
+    expect('Message has input', 'Assertions Message').to.contain('input');
     expect('Message has input').to.contains('input');
 
-    expect('Message has input').to.be.include('input');
-    expect('Message has input').to.includes('input');
-    expect([1, 2]).to.be.include(2);
-    expect([1, 2]).to.be.includes(2);
-    expect('Message has input').to.have.string('input');
-    expect(i.name).to.be.oneOf(['name', 'customFields.custom_company_text_field']);
-    // Should handle this edge cases
-    // expect(options).to.be.an('array').to.not.include(serviceTaskType);
-    // Not contains
-    expect('Message').to.not.contain('input');
-    expect('Message', 'Assertions Message').to.not.contains('input');
+    // Not include
+    expect('Message has input').that.includes('input');
     expect('Message').to.not.include('input');
-    expect('Message', 'Assertions Message').to.not.includes('input');
-    expect('Message').to.not.have.string('input');
   });
 
   // expected-closeto
