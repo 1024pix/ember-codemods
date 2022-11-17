@@ -1,5 +1,6 @@
 test('Method with return expression', function(assert) {
-  expect(currentURL(), 'Url page', '/url/param');
+  assert.ok(currentURL());
+  assert.ok('toto');
 });
 
 // Input

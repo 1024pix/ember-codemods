@@ -70,6 +70,7 @@ module.exports = function transformer(file, api) {
   addAssertOkAfterSinonAssert(j, root);
   replaceTimeout(j,root);
   addMissingImport(root, j);
+  replaceExpect(root,j);
 
   return beautifyImports(
     root.toSource({
@@ -302,6 +303,22 @@ module.exports = function transformer(file, api) {
         )
       );
       blockExpression.value.body.push(assertCall);
+    });
+  }
+
+  function replaceExpect(root, j) {
+    root.find(j.CallExpression, {
+        callee: {
+          name: 'expect'
+        }
+    }).replaceWith((path) => {
+      return j.callExpression(
+        j.memberExpression(
+          j.identifier('assert'),
+          j.identifier('ok')
+        ),
+        path.node.arguments
+      )
     });
   }
 

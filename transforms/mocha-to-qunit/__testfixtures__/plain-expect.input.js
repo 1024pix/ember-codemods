@@ -1,5 +1,6 @@
 it('Method with return expression', function() {
-  expect(currentURL(), 'Url page', '/url/param');
+  expect(currentURL());
+  expect('toto');
 });
 
 // Input
