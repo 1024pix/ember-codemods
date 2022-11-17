@@ -69,6 +69,7 @@ module.exports = function transformer(file, api) {
 
   addAssertOkAfterSinonAssert(j, root);
   replaceTimeout(j,root);
+  addMissingImport(root, j);
 
   return beautifyImports(
     root.toSource({
@@ -106,7 +107,7 @@ module.exports = function transformer(file, api) {
     }
   }
 
-  function removeMochaImports(callbackHooks, j, root) {    
+  function removeMochaImports(callbackHooks, j, root) {
     callbackHooks.forEach((name) => {
       root.find(j.ImportSpecifier, {
         imported: {
@@ -130,6 +131,33 @@ module.exports = function transformer(file, api) {
 
       if(!hasImport) {
         path.node.specifiers.push(j.importSpecifier(j.identifier(name)));
+      }
+    });
+  }
+
+  function addMissingImport(root, j) {
+    root.find(j.ImportDeclaration, {
+      source: {
+        value: 'qunit'
+      }
+    }).forEach((path) => {
+      const hasTestImport = (j(path).find(j.ImportSpecifier, {
+        imported: {
+          name : 'test'
+        }
+      }).length > 0);
+
+      const hasModuleImport = (j(path).find(j.ImportSpecifier, {
+        imported: {
+          name : 'module'
+        }
+      }).length > 0);
+
+      if(!hasTestImport) {
+        path.node.specifiers.push(j.importSpecifier(j.identifier('test')));
+      }
+      if(!hasModuleImport) {
+        path.node.specifiers.push(j.importSpecifier(j.identifier('module')));
       }
     });
   }

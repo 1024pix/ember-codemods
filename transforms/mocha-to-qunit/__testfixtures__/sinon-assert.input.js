@@ -1,4 +1,4 @@
-import { describe, it, context } from 'mocha';
+import {  context } from 'mocha';
 
 describe('Integration | Component', function() {
   it('basic expect statements', async function() {

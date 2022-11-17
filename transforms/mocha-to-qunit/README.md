@@ -744,7 +744,6 @@ test('Method with return expression', function(assert) {
 ---
 <a id="test-describe-skip">**test-describe-skip**</a>
 
-**Input** (<small>[test-describe-skip.input.js](transforms/mocha-to-qunit/__testfixtures__/test-describe-skip.input.js)</small>):
 ```js
 import { describe, it, context } from 'mocha';
 
@@ -777,7 +776,6 @@ describe.skip('Integration | Component', function() {
 
 ```
 
-**Output** (<small>[test-describe-skip.output.js](transforms/mocha-to-qunit/__testfixtures__/test-describe-skip.output.js)</small>):
 ```js
 import { module, skip } from 'qunit';
 
