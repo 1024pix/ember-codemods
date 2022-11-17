@@ -114,8 +114,8 @@ module('Integration | Component', function(hooks) {
 
   // expected-match
   test('Contains expects expected-match', function(assert) {
-    assert.match('Message-1234-message', /[a-zA-Z]+-\d+-[a-zA-Z]/, 'String should match the regex');
-    assert.notMatch('1234-message', /[a-zA-Z]+-\d+-[a-zA-Z]/, 'String should not match the regex');
+    assert.ok(/[a-zA-Z]+-\d+-[a-zA-Z]/.test('Message-1234-message'));
+    assert.ok(new RegExp(/[a-zA-Z]+-\d+-[a-zA-Z]/).test('Message-1234-message'));
   });
 
   // 'expected-null'

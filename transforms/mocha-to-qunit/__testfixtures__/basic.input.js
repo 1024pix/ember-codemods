@@ -111,8 +111,8 @@ describe('Integration | Component', function() {
 
   // expected-match
   it('Contains expects expected-match', function () {
-    expect('Message-1234-message', 'String should match the regex').to.be.match(/[a-zA-Z]+-\d+-[a-zA-Z]/);
-    expect('1234-message', 'String should not match the regex').to.not.match(/[a-zA-Z]+-\d+-[a-zA-Z]/);
+    expect('Message-1234-message').to.match(/[a-zA-Z]+-\d+-[a-zA-Z]/);
+    expect('Message-1234-message').to.match(new RegExp(/[a-zA-Z]+-\d+-[a-zA-Z]/));
   });
 
   // 'expected-null'

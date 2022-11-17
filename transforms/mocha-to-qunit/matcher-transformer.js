@@ -92,8 +92,8 @@ module.exports = [{
     transformer: function (expression, path, j) {
       var { assertArgumentSource, assertMessage, hasShouldNot } = extractExpect(path, j);
       var expectedArgument = j(expression.arguments).toSource();
-      var assertMethod = hasShouldNot ? 'notMatch' : 'match';
-      var assertArguments = joinParams(assertArgumentSource, expectedArgument, assertMessage);
+      var assertMethod = hasShouldNot ? 'notOk' : 'ok';
+      var assertArguments = joinParams(`${expectedArgument}.test(${assertArgumentSource})`, assertMessage);
 
       return `assert.${assertMethod}(${assertArguments});`;
     }
