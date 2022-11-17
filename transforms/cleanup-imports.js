@@ -45,7 +45,6 @@ function setupHooksForTest(setupTestTypes, j, root) {
 function setupCallbackHooks(hooks, name, j, root) {
   root.find(j.CallExpression, { callee: { name }})
     .filter((path) => {
-      let actualPath = path.node.arguments[1];
       let hasHooks = hooks.some((hookName) => {
         return !(findIdentifier(path, hookName, j, root).length === 0);
       });
@@ -65,7 +64,14 @@ function setupCallbackHooks(hooks, name, j, root) {
             callee.name = `hooks.${name}`;
           }
         });
-        return path.node.arguments[1].params = ['hooks'];
+    })
+    .filter((path) => {
+      let actualPath = path.node.arguments[1];
+      let isNestedModule = findIdentifier(actualPath, name, j, root).length === 0;
+      return isNestedModule
+    })
+    .forEach((path) => {
+      return path.node.arguments[1].params = ['hooks'];
     });
 }
 

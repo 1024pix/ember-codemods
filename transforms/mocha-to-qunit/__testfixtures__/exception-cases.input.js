@@ -126,3 +126,20 @@ describe('Integration | Component', function() {
     });
   });
 });
+
+describe('Integration | Component test', function() {
+  setupTest();
+
+  describe('Integration | Component test', function() {
+
+    describe('foo', function() {
+      beforeEach(function () {
+        const foo = 'bar';
+      });
+
+      it('Testing await done', async function() {
+        expect(false).not.equal(true);
+      });
+    });
+  });
+});

@@ -120,3 +120,20 @@ module('Integration | Component', function(hooks) {
     });
   });
 });
+
+module('Integration | Component test', function(hooks) {
+  setupTest(hooks);
+
+  module('Integration | Component test', function() {
+
+    module('foo', function(hooks) {
+      hooks.beforeEach(function () {
+        const foo = 'bar';
+      });
+
+      test('Testing await done', async function(assert) {
+        assert.notEqual(false, true);
+      });
+    });
+  });
+});
