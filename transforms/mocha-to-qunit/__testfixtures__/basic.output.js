@@ -91,6 +91,9 @@ module('Integration | Component', function(hooks) {
     assert.dom('[data-test-id=page-title]').isNotDisabled();
     assert.dom('[data-test-id=page-title]').isNotVisible();
     assert.dom(updateButton).isNotDisabled();
+
+    assert.dom('[data-test-id=page-title]').isNotVisible();
+    assert.dom('[data-test-id=page-title]').isVisible();
   });
 
   // 'expected-contains'

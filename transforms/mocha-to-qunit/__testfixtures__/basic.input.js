@@ -88,6 +88,9 @@ describe('Integration | Component', function() {
     expect(find('[data-test-id=page-title]')).to.not.be.disabled;
     expect(find('[data-test-id=page-title]')).to.not.be.visible;
     expect(find(updateButton)).to.be.enabled;
+
+    expect(find('[data-test-id=page-title]')).to.not.be.displayed;
+    expect(find('[data-test-id=page-title]')).to.be.displayed;
   });
 
   // 'expected-contains'

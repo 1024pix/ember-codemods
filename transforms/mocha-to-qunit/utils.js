@@ -17,7 +17,8 @@ function getQunitDomAssertType(assertType, hasShouldNot) {
       visible: 'isVisible',
       disabled: 'isDisabled',
       enabled: 'isNotDisabled',
-      value: 'hasValue'
+      value: 'hasValue',
+      displayed: 'isVisible'
     },
     negative: {
       attr: 'doesNotHaveAttribute',
@@ -26,7 +27,8 @@ function getQunitDomAssertType(assertType, hasShouldNot) {
       class: 'doesNotHaveClass',
       visible: 'isNotVisible',
       disabled: 'isNotDisabled',
-      enabled: 'isDisabled'
+      enabled: 'isDisabled',
+      displayed: 'isNotVisible'
     }
   };
   let assertionMap = hasShouldNot ? domAssertionsMapping.negative : domAssertionsMapping.positive;
