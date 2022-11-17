@@ -12,6 +12,7 @@ module('Integration | Component', function(hooks) {
   setupWindowMock(hooks);
   setupIntl(hooks);
   setupMirage(hooks);
+  setupIntlRenderingTest(hooks);
 
   test('basic expect statements', async function(assert) {
     // Simple true validation

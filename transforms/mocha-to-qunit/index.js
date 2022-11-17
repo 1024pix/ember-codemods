@@ -44,7 +44,8 @@ module.exports = function transformer(file, api) {
     'setupRenderingTest',
     'setupApplicationTest',
     'setupRenderingForModule',
-    'setupApplicationForModule'
+    'setupApplicationForModule',
+    'setupIntlRenderingTest',
   ];
 
   const callbackHooks = ['before', 'after', 'beforeEach', 'afterEach'];

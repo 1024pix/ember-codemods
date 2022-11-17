@@ -9,6 +9,7 @@ describe('Integration | Component', function() {
   setupWindowMock(hooks);
   setupIntl();
   setupMirage();
+  setupIntlRenderingTest();
 
   it('basic expect statements', async function() {
     // Simple true validation
