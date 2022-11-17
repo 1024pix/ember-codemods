@@ -68,6 +68,7 @@ module.exports = function transformer(file, api) {
   removeChaiImports(j, root);
 
   addAssertOkAfterSinonAssert(j, root);
+  replaceTimeout(j,root);
 
   return beautifyImports(
     root.toSource({
@@ -274,5 +275,21 @@ module.exports = function transformer(file, api) {
       );
       blockExpression.value.body.push(assertCall);
     });
+  }
+
+  function replaceTimeout(j, root) {
+    root.find(j.MemberExpression, {
+      object: {
+       type: 'ThisExpression'
+      },
+      property: {
+        name: 'timeout',
+      }
+    }).replaceWith(
+      j.memberExpression(
+        j.identifier('assert'),
+        j.identifier('timeout')
+      ),
+    );
   }
 }
