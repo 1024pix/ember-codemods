@@ -71,6 +71,11 @@ module.exports = function transformer(file, api) {
   addAssertOkAfterSinonAssert(j, root);
   replaceTimeout(j,root);
   addMissingImport(root, j);
+
+  root.find(j.FunctionExpression)
+    .filter((path) => path.parent.node.callee && ['test', 'skip'].includes(path.parent.node.callee.name))
+    .forEach(transformerMissingTests);
+
   replaceExpect(root,j);
 
   return beautifyImports(
@@ -259,6 +264,7 @@ module.exports = function transformer(file, api) {
             console.log(`
               You may have test with bad assertions!!!
               Check if you are having an expect without an assertion
+              ${expression}
             `);
             throw BreakException;
           } else if (matcher(expression, path, j, root)) {
@@ -337,5 +343,19 @@ module.exports = function transformer(file, api) {
         j.identifier('timeout')
       ),
     );
+  }
+
+  function transformerMissingTests(path) {
+    if(pathHasExpects(path) || pathHasSinonAssert(path) ) {
+      path.node.params = ['assert'];
+    }
+
+    j(path).find(j.ExpressionStatement)
+      .filter(pathHasExpects)
+      .forEach(transformExpect);
+
+    j(path).find(j.ReturnStatement)
+      .filter(pathHasExpects)
+      .forEach(returnExtraction);
   }
 }
