@@ -54,11 +54,11 @@ module('Integration | Component', function(hooks) {
     assert.dom('[data-test-id=page-title]').exists({ count: titles.length }, '[Message] Length Comparison with variable value');
     assert.dom('[data-test-id=page-title]').exists({ count: titlesLength });
 
-    assert.length(pageTitleSelector, 2, 'Assertion Message');
-    assert.length(pageTitleSelector, titlesLength, 'Assertion Message');
-    assert.length(pageTitleSelector, titlesLength);
-    assert.length(find('[data-test-id=page-titles]').querySelectorAll('[data-test-id=page-title]'), 2);
-    assert.length(find('[data-test-id=page-titles]').querySelector('[data-test-id=page-title]'), 1);
+    assert.equal(pageTitleSelector.length, 2, 'Assertion Message');
+    assert.equal(pageTitleSelector.length, titlesLength, 'Assertion Message');
+    assert.equal(pageTitleSelector.length, titlesLength);
+    assert.equal(find('[data-test-id=page-titles]').querySelectorAll('[data-test-id=page-title]').length, 2);
+    assert.equal(find('[data-test-id=page-titles]').querySelector('[data-test-id=page-title]').length, 1);
 
     // Variations in dom assertions
     assert.dom('[data-test-id=page-title]').exists();

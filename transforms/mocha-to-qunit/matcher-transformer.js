@@ -145,7 +145,7 @@ module.exports = [{
   name: 'expected-length',
   // expect(findAll('[data-test-id=page-title]')).to.have.length(1);
   matcher: function(expression) {
-    return expression.callee && expression.callee.property.name.includes('length');
+    return expression.callee && ['length','lengthOf'].includes(expression.callee.property.name);
   },
   transformer: function (expression, path, j) {
     var { assertArgument, assertArgumentSource, assertMessage, hasSelectorWithoutProperty } = extractExpect(path, j);
@@ -156,10 +156,12 @@ module.exports = [{
       if (hasSelectorWithoutProperty) {
         return constructDomExists(j, assertArgument, assertMessage, lengthValue != 0, lengthValue);
       } else {
-        return `assert.length(${joinParams(assertArgumentSource, lengthValue, assertMessage)});`;
+        const params = joinParams(`${assertArgumentSource}.length`,lengthValue, assertMessage);
+        return `assert.equal(${params})`;
       }
     } catch {
-      return `assert.length(${joinParams(assertArgumentSource, lengthValue, assertMessage)});`;
+      const params = joinParams(`${assertArgumentSource}.length`,lengthValue, assertMessage);
+      return `assert.equal(${params})`;
     }
   }
 }, {
