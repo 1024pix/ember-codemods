@@ -71,7 +71,7 @@ function setupCallbackHooks(hooks, name = 'module', j, root) {
       return isNestedModule
     })
     .forEach((path) => {
-      return path.node.arguments[1].params = ['hooks'];
+      return path.node.arguments[1].params = [j.identifier('hooks')];
     });
 }
 

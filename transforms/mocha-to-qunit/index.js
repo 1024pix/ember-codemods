@@ -77,10 +77,17 @@ module.exports = function transformer(file, api) {
     .forEach(transformerMissingTests);
 
   replaceExpect(root,j);
-  addMissingHooks(root, j);
+
+  // Save root to find missing hooks after
+  const newRoot = j(root.toSource({
+    quote: 'single',
+    lineTerminator,
+    trailingComma: false
+  }));
+  addMissingHooks(newRoot, j);
 
   return beautifyImports(
-    root.toSource({
+    newRoot.toSource({
       quote: 'single',
       lineTerminator,
       trailingComma: false
@@ -361,20 +368,20 @@ module.exports = function transformer(file, api) {
   }
 
   function addMissingHooks(root, j) {
-   const beforeEachs = root.find(j.CallExpression, {
-      callee: {
-        object: {
-          name: 'hooks',
-        },
-        property: {
-          name: 'beforeEach',
+    ['before','beforeEach', 'after', 'afterEach'].forEach((hookName) => {
+      root.find(j.CallExpression, {
+        callee: {
+          object: {
+            name: 'hooks',
+          },
+          property: {
+            name: hookName,
+          }
         }
-      }
-    });
-
-   beforeEachs.forEach((path) => {
-      const testExpression = path.get().parent.parent.parent;
-      testExpression.value.params = [' hooks'];
+      }).forEach((path) => {
+        const testExpression = path.get().parent.parent.parent;
+        testExpression.value.params = [j.identifier('hooks')];
+      });
     });
   }
 }
