@@ -42,7 +42,7 @@ function setupHooksForTest(setupTestTypes, j, root) {
   });
 }
 
-function setupCallbackHooks(hooks, name, j, root) {
+function setupCallbackHooks(hooks, name = 'module', j, root) {
   root.find(j.CallExpression, { callee: { name }})
     .filter((path) => {
       let hasHooks = hooks.some((hookName) => {

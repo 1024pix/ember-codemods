@@ -77,6 +77,7 @@ module.exports = function transformer(file, api) {
     .forEach(transformerMissingTests);
 
   replaceExpect(root,j);
+  addMissingHooks(root, j);
 
   return beautifyImports(
     root.toSource({
@@ -357,5 +358,23 @@ module.exports = function transformer(file, api) {
     j(path).find(j.ReturnStatement)
       .filter(pathHasExpects)
       .forEach(returnExtraction);
+  }
+
+  function addMissingHooks(root, j) {
+   const beforeEachs = root.find(j.CallExpression, {
+      callee: {
+        object: {
+          name: 'hooks',
+        },
+        property: {
+          name: 'beforeEach',
+        }
+      }
+    });
+
+   beforeEachs.forEach((path) => {
+      const testExpression = path.get().parent.parent.parent;
+      testExpression.value.params = [' hooks'];
+    });
   }
 }
