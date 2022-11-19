@@ -5,7 +5,8 @@
     "test": "codemod-cli test",
     "update-docs": "codemod-cli update-docs",
     "deploy-patch": "npm version patch && git push && git push --tags && npm publish",
-    "deploy-minor": "npm version minor && git push && git push --tags && npm publish"
+    "deploy-minor": "npm version minor && git push && git push --tags && npm publish",
+    "lint": "eslint ."
   },
   "bin": "./bin/cli.js",
   "repository": "https://github.com/freshdesk/ember-freshdesk-codemods.git",
@@ -17,7 +18,11 @@
     "codemod-cli": "2.0.0"
   },
   "devDependencies": {
-    "jest": "^24.1.0"
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "jest": "^24.1.0",
+    "prettier": "^2.7.1"
   },
   "jest": {
     "testEnvironment": "node"
