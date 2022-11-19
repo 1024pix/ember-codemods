@@ -11,8 +11,9 @@ module.exports = function beautifyImports(source) {
       // if the segment is > 50 chars make it multi-line
       let result = importStatement.slice(0, openCurly + 1);
       let named = importStatement
-        .slice(openCurly + 1, -6).split(',')
-        .map(name => `\n  ${name.trim()}`);
+        .slice(openCurly + 1, -6)
+        .split(',')
+        .map((name) => `\n  ${name.trim()}`);
 
       return result + named.join(',') + '\n} from';
     } else {
@@ -23,4 +24,4 @@ module.exports = function beautifyImports(source) {
         .replace(/\s*\}/, ' }');
     }
   });
-}
+};

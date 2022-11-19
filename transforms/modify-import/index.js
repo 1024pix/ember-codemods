@@ -13,14 +13,9 @@ module.exports = function transformer(file, api) {
   const lineTerminator = source.indexOf('\r\n') > -1 ? '\r\n' : '\n';
 
   mapper.forEach((map) =>
-    map.importSpecifiers.sort().forEach(
-      (importSpecifiers) => transformImport(
-        root,
-        importSpecifiers,
-        map.importDeclaration,
-        map.importType
-      )
-    )
+    map.importSpecifiers
+      .sort()
+      .forEach((importSpecifiers) => transformImport(root, importSpecifiers, map.importDeclaration, map.importType))
   );
 
   cleanupBlankImports(j, root);
@@ -29,7 +24,7 @@ module.exports = function transformer(file, api) {
     root.toSource({
       quote: 'single',
       lineTerminator,
-      trailingComma: false
+      trailingComma: false,
     })
   );
 
@@ -37,24 +32,26 @@ module.exports = function transformer(file, api) {
 
   // Check if there any importSpecifier with the given name
   function findImportSpecifier(root, importName, oldImportPath, type = 'specifier') {
-    let isDefault = (type === 'default');
+    let isDefault = type === 'default';
     let importType = isDefault ? j.ImportDefaultSpecifier : j.ImportSpecifier;
-    return root.find(importType, {
-      local: {
-        name: importName
-      }
-    }).filter((path) => {
-      return (path.parent.value.source.value === oldImportPath)
-    });
-  };
+    return root
+      .find(importType, {
+        local: {
+          name: importName,
+        },
+      })
+      .filter((path) => {
+        return path.parent.value.source.value === oldImportPath;
+      });
+  }
 
   function findImportDeclaration(root, declarationName) {
     return root.find(j.ImportDeclaration, {
       source: {
-        value: declarationName
-      }
+        value: declarationName,
+      },
     });
-  };
+  }
 
   function createOrImportDeclaration(root, declarationName) {
     let existingDeclaration = findImportDeclaration(root, declarationName);
@@ -68,12 +65,12 @@ module.exports = function transformer(file, api) {
       lastImport.insertAfter(newImport);
       return newImport;
     }
-  };
+  }
 
   function insertNewSpecifier(importDeclaration, specifierName) {
     let newSpecifier = j.importSpecifier(j.identifier(specifierName));
     importDeclaration.specifiers.push(newSpecifier);
-  };
+  }
 
   function transformImport(root, specifierName, existingImportPath, importType = 'specifier') {
     let oldImportMethod = findImportSpecifier(root, specifierName, existingImportPath, importType);
@@ -85,5 +82,5 @@ module.exports = function transformer(file, api) {
       let importDeclaration = createOrImportDeclaration(root, newImportPath);
       insertNewSpecifier(importDeclaration, specifierName);
     }
-  };
-}
+  }
+};

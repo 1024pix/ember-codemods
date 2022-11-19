@@ -15,7 +15,7 @@ module.exports = function transformer(file, api) {
     root.toSource({
       quote: 'single',
       lineTerminator,
-      trailingComma: false
+      trailingComma: false,
     })
   );
-}
+};

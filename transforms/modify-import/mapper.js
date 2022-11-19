@@ -1,4 +1,5 @@
-module.exports = [{
+module.exports = [
+  {
     importDeclaration: 'freshdesk/tests/helpers/util-test-helpers',
     importSpecifiers: [
       'addFeatures',
@@ -11,8 +12,8 @@ module.exports = [{
       'setupSinonSandbox',
       'setSinonContext',
       'getSinonContext',
-      'modifyFeatures'
-    ]
+      'modifyFeatures',
+    ],
   },
   {
     importDeclaration: 'freshdesk/tests/helpers/integration-test-helpers',
@@ -23,14 +24,12 @@ module.exports = [{
       'setupRenderingWithMirage',
       'setupAcceptance',
       'spyFlashMessage',
-      'stubRouter'
-    ]
+      'stubRouter',
+    ],
   },
   {
     importDeclaration: 'freshdesk/tests/helpers/setup-acceptance',
     importType: 'default',
-    importSpecifiers: [
-      'setupAcceptance'
-    ]
-  }
+    importSpecifiers: ['setupAcceptance'],
+  },
 ];

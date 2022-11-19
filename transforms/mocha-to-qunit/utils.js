@@ -1,5 +1,5 @@
 function hasValue(value) {
-  return !(typeof (value) === 'undefined' || value === null || value === '' || value.length === 0);
+  return !(typeof value === 'undefined' || value === null || value === '' || value.length === 0);
 }
 
 function joinParams(...params) {
@@ -18,7 +18,7 @@ function getQunitDomAssertType(assertType, hasShouldNot) {
       disabled: 'isDisabled',
       enabled: 'isNotDisabled',
       value: 'hasValue',
-      displayed: 'isVisible'
+      displayed: 'isVisible',
     },
     negative: {
       attr: 'doesNotHaveAttribute',
@@ -28,8 +28,8 @@ function getQunitDomAssertType(assertType, hasShouldNot) {
       visible: 'isNotVisible',
       disabled: 'isNotDisabled',
       enabled: 'isDisabled',
-      displayed: 'isNotVisible'
-    }
+      displayed: 'isNotVisible',
+    },
   };
   let assertionMap = hasShouldNot ? domAssertionsMapping.negative : domAssertionsMapping.positive;
   return assertionMap[assertType];
@@ -38,32 +38,32 @@ function getQunitDomAssertType(assertType, hasShouldNot) {
 function findExpect(path, j) {
   return j(path).find(j.CallExpression, {
     callee: {
-      name: 'expect'
-    }
+      name: 'expect',
+    },
   });
 }
 
 function findSinonAssert(path, j) {
   return j(path).find(j.MemberExpression, {
     object: {
-      name: 'sinon'
+      name: 'sinon',
     },
     property: {
       name: 'assert',
-    }
+    },
   });
 }
 
 function findNegation(path, j) {
   let notIdentifier = j(path).find(j.Identifier, {
-    name: 'not'
+    name: 'not',
   });
   return notIdentifier.length !== 0;
 }
 
 function findIdentifier(path, j, name) {
   let identifier = j(path).find(j.Identifier, {
-    name
+    name,
   });
   return identifier.length !== 0;
 }
@@ -85,7 +85,7 @@ function extractExpect(path, j) {
   let assertArguments = expectPath.node.arguments;
   let assertArgument = assertArguments[0];
   let assertArgumentSource = j(assertArgument).toSource();
-  let hasMessage = (assertArguments.length > 1);
+  let hasMessage = assertArguments.length > 1;
 
   let hasSelector = findSelectorHelper(assertArguments, j);
   let hasSelectorWithoutProperty = hasSelector && !hasChainedProperty(assertArgument);
@@ -105,7 +105,7 @@ function extractExpect(path, j) {
     assertMessage,
     hasShouldNot,
     hasSelector,
-    hasSelectorWithoutProperty
+    hasSelectorWithoutProperty,
   };
 }
 
@@ -130,30 +130,32 @@ function constructDomAssertions(j, assertArgument, assertMessage, assertType, ha
   let domSelector = j(assertArgument.arguments || assertArgument.name || assertArgument).toSource();
   let qunitAssertType = getQunitDomAssertType(assertType, hasShouldNot);
   let assertionArguments = [];
-  if(expectedArguments.length) {
-    assertionArguments = expectedArguments.length > 1 ? j(expectedArguments).toSource() : [j(expectedArguments).toSource()];
+  if (expectedArguments.length) {
+    assertionArguments =
+      expectedArguments.length > 1 ? j(expectedArguments).toSource() : [j(expectedArguments).toSource()];
   }
-  if(hasValue(assertMessage)) {
+  if (hasValue(assertMessage)) {
     assertionArguments.push(assertMessage);
   }
   return `assert.dom(${domSelector}).${qunitAssertType}(${assertionArguments.join(', ')});`;
 }
 
 function renameIdentifier(fromName, toName, root, j) {
-  root.find(j.Identifier, {
-      name: fromName
-  }).forEach(path => path.node.name = toName);
+  root
+    .find(j.Identifier, {
+      name: fromName,
+    })
+    .forEach((path) => (path.node.name = toName));
 }
 
 function renameImport(fromName, toName, root, j) {
-  root.find(j.ImportDeclaration, {
+  root
+    .find(j.ImportDeclaration, {
       source: {
-        value: fromName
-      }
+        value: fromName,
+      },
     })
-    .forEach(({
-      node
-    }) => node.source.value = toName);
+    .forEach(({ node }) => (node.source.value = toName));
 }
 
 function renameIdentifiers(list, root, j) {
@@ -168,7 +170,6 @@ function renameImports(list, root, j) {
   });
 }
 
-
 module.exports = {
   hasValue,
   joinParams,
@@ -182,5 +183,5 @@ module.exports = {
   renameIdentifier,
   renameImport,
   renameIdentifiers,
-  renameImports
-}
+  renameImports,
+};
