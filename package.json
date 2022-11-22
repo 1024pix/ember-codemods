@@ -1,5 +1,5 @@
 {
-  "name": "@freshworks/ember-codemods",
+  "name": "@1024pix/ember-codemods",
   "version": "0.5.0",
   "scripts": {
     "test": "codemod-cli test",
@@ -9,7 +9,7 @@
     "lint": "eslint ."
   },
   "bin": "./bin/cli.js",
-  "repository": "https://github.com/freshdesk/ember-freshdesk-codemods.git",
+  "repository": "https://github.com/1024pix/ember-freshdesk-codemods.git",
   "license": "MIT",
   "keywords": [
     "codemod-cli"
