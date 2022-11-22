@@ -1,21 +1,17 @@
-# @freshworks/ember-codemods
+# @1024pix/ember-codemods
 
-![npm (scoped)](https://img.shields.io/npm/v/@freshworks/ember-codemods)
-![](https://github.com/freshdesk/ember-freshdesk-codemods/workflows/Node%20CI/badge.svg)
-
-
-A collection of codemods by Freshworks.
+A collection of codemods by 1024pix.
 
 ## Usage
 
 To run a specific codemod from this project, you would run the following:
 
 ```
-npx @freshworks/ember-codemods <TRANSFORM NAME> path/of/files/ or/some**/*glob.js
+npx @1024pix/ember-codemods <TRANSFORM NAME> path/of/files/ or/some**/*glob.js
 
 # or
 
-yarn global add @freshworks/ember-codemods
+npm i -g @1024pix/ember-codemods
 ember-codemods <TRANSFORM NAME> path/of/files/ or/some**/*glob.js
 ```
 
@@ -31,12 +27,12 @@ ember-codemods <TRANSFORM NAME> path/of/files/ or/some**/*glob.js
 
 * clone the repo
 * change into the repo directory
-* `yarn`
+* `npm i`
 
 ### Running tests
 
-* `yarn test`
+* `npm test`
 
 ### Update Documentation
 
-* `yarn update-docs`
+* `npm update-docs`
