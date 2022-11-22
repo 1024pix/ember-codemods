@@ -17,9 +17,12 @@ ember-freshdesk-codemods mocha-to-qunit path/of/files/ or/some**/*glob.js
 <!--FIXTURES_TOC_START-->
 * [basic](#basic)
 * [exception-cases](#exception-cases)
+* [module-hooks](#module-hooks)
 * [plain-expect](#plain-expect)
-* [test-describe-skip](#test-describe-skip)
+* [sinon-assert](#sinon-assert)
 * [test-skips](#test-skips)
+* [throw](#throw)
+* [timeout](#timeout)
 <!--FIXTURES_TOC_END-->
 
 <!--FIXTURES_CONTENT_START-->
@@ -37,6 +40,9 @@ describe('Integration | Component', function() {
   let hooks = setupApplicationTest();
   setupTest();
   setupWindowMock(hooks);
+  setupIntl();
+  setupMirage();
+  setupIntlRenderingTest();
 
   it('basic expect statements', async function() {
     // Simple true validation
@@ -116,30 +122,22 @@ describe('Integration | Component', function() {
     expect(find('[data-test-id=page-title]')).to.not.be.disabled;
     expect(find('[data-test-id=page-title]')).to.not.be.visible;
     expect(find(updateButton)).to.be.enabled;
+
+    expect(find('[data-test-id=page-title]')).to.not.be.displayed;
+    expect(find('[data-test-id=page-title]')).to.be.displayed;
   });
 
   // 'expected-contains'
   it('Contains expects expected-contains', function() {
-    expect('Message has input').to.be.contains('input');
-    expect([1, 2]).to.be.contain(2);
-    expect('Message has input', 'Assertions Message').to.have.contain('input');
-    expect('Message has input').to.be.contain('input');
+    expect([1, 2]).not.to.contain(2);
+    expect('Message has input').to.not.contain('input');
+    expect('Message', 'Assertions Message').to.not.contains('input');
+    expect('Message has input', 'Assertions Message').to.contain('input');
     expect('Message has input').to.contains('input');
 
-    expect('Message has input').to.be.include('input');
-    expect('Message has input').to.includes('input');
-    expect([1, 2]).to.be.include(2);
-    expect([1, 2]).to.be.includes(2);
-    expect('Message has input').to.have.string('input');
-    expect(i.name).to.be.oneOf(['name', 'customFields.custom_company_text_field']);
-    // Should handle this edge cases
-    // expect(options).to.be.an('array').to.not.include(serviceTaskType);
-    // Not contains
-    expect('Message').to.not.contain('input');
-    expect('Message', 'Assertions Message').to.not.contains('input');
+    // Not include
+    expect('Message has input').that.includes('input');
     expect('Message').to.not.include('input');
-    expect('Message', 'Assertions Message').to.not.includes('input');
-    expect('Message').to.not.have.string('input');
   });
 
   // expected-closeto
@@ -150,8 +148,8 @@ describe('Integration | Component', function() {
 
   // expected-match
   it('Contains expects expected-match', function () {
-    expect('Message-1234-message', 'String should match the regex').to.be.match(/[a-zA-Z]+-\d+-[a-zA-Z]/);
-    expect('1234-message', 'String should not match the regex').to.not.match(/[a-zA-Z]+-\d+-[a-zA-Z]/);
+    expect('Message-1234-message').to.match(/[a-zA-Z]+-\d+-[a-zA-Z]/);
+    expect('Message-1234-message').to.match(new RegExp(/[a-zA-Z]+-\d+-[a-zA-Z]/));
   });
 
   // 'expected-null'
@@ -253,6 +251,9 @@ module('Integration | Component', function(hooks) {
   setupApplicationTest(hooks);
   setupTest(hooks);
   setupWindowMock(hooks);
+  setupIntl(hooks);
+  setupMirage(hooks);
+  setupIntlRenderingTest(hooks);
 
   test('basic expect statements', async function(assert) {
     // Simple true validation
@@ -294,16 +295,16 @@ module('Integration | Component', function(hooks) {
     assert.dom('[data-test-id=page-title]').exists({ count: titles.length }, '[Message] Length Comparison with variable value');
     assert.dom('[data-test-id=page-title]').exists({ count: titlesLength });
 
-    assert.length(pageTitleSelector, 2, 'Assertion Message');
-    assert.length(pageTitleSelector, titlesLength, 'Assertion Message');
-    assert.length(pageTitleSelector, titlesLength);
-    assert.length(find('[data-test-id=page-titles]').querySelectorAll('[data-test-id=page-title]'), 2);
-    assert.length(find('[data-test-id=page-titles]').querySelector('[data-test-id=page-title]'), 1);
+    assert.equal(pageTitleSelector.length, 2, 'Assertion Message');
+    assert.equal(pageTitleSelector.length, titlesLength, 'Assertion Message');
+    assert.equal(pageTitleSelector.length, titlesLength);
+    assert.equal(find('[data-test-id=page-titles]').querySelectorAll('[data-test-id=page-title]').length, 2);
+    assert.equal(find('[data-test-id=page-titles]').querySelector('[data-test-id=page-title]').length, 1);
 
     // Variations in dom assertions
     assert.dom('[data-test-id=page-title]').exists();
     assert.dom('[data-test-id=page-title]').doesNotExist();
-    assert.includes(find('[data-test-id=page-title]').getAttribute('href'), '/some/url');
+    assert.ok(find('[data-test-id=page-title]').getAttribute('href').includes('/some/url'));
     assert.equal(find('[data-test-id=page-title]').className.includes('active'), true);
     assert.ok(find('[data-test-id=page-titles]').querySelector('[data-test-id=page-title]'));
   });
@@ -332,30 +333,22 @@ module('Integration | Component', function(hooks) {
     assert.dom('[data-test-id=page-title]').isNotDisabled();
     assert.dom('[data-test-id=page-title]').isNotVisible();
     assert.dom(updateButton).isNotDisabled();
+
+    assert.dom('[data-test-id=page-title]').isNotVisible();
+    assert.dom('[data-test-id=page-title]').isVisible();
   });
 
   // 'expected-contains'
   test('Contains expects expected-contains', function(assert) {
-    assert.includes('Message has input', 'input');
-    assert.includes([1, 2], 2);
-    assert.includes('Message has input', 'input', 'Assertions Message');
-    assert.includes('Message has input', 'input');
-    assert.includes('Message has input', 'input');
+    assert.notOk([1, 2].includes(2));
+    assert.notOk('Message has input'.includes('input'));
+    assert.notOk('Message'.includes('input'), 'Assertions Message');
+    assert.ok('Message has input'.includes('input'), 'Assertions Message');
+    assert.ok('Message has input'.includes('input'));
 
-    assert.includes('Message has input', 'input');
-    assert.includes('Message has input', 'input');
-    assert.includes([1, 2], 2);
-    assert.includes([1, 2], 2);
-    assert.includes('Message has input', 'input');
-    assert.includes(['name', 'customFields.custom_company_text_field'], i.name);
-    // Should handle this edge cases
-    // expect(options).to.be.an('array').to.not.include(serviceTaskType);
-    // Not contains
-    assert.notIncludes('Message', 'input');
-    assert.notIncludes('Message', 'input', 'Assertions Message');
-    assert.notIncludes('Message', 'input');
-    assert.notIncludes('Message', 'input', 'Assertions Message');
-    assert.notIncludes('Message', 'input');
+    // Not include
+    assert.ok('Message has input'.includes('input'));
+    assert.notOk('Message'.includes('input'));
   });
 
   // expected-closeto
@@ -366,8 +359,8 @@ module('Integration | Component', function(hooks) {
 
   // expected-match
   test('Contains expects expected-match', function(assert) {
-    assert.match('Message-1234-message', /[a-zA-Z]+-\d+-[a-zA-Z]/, 'String should match the regex');
-    assert.notMatch('1234-message', /[a-zA-Z]+-\d+-[a-zA-Z]/, 'String should not match the regex');
+    assert.ok(/[a-zA-Z]+-\d+-[a-zA-Z]/.test('Message-1234-message'));
+    assert.ok(new RegExp(/[a-zA-Z]+-\d+-[a-zA-Z]/).test('Message-1234-message'));
   });
 
   // 'expected-null'
@@ -467,6 +460,7 @@ import { run } from '@ember/runloop';
 import {
   SWITCHER_OPTIONS as switcherOptions
 } from 'freshdesk/constants/automations';
+import toto from 'chai';
 
 let name = faker.name.firstName();
 
@@ -490,6 +484,14 @@ describe('Integration | Component', function() {
   let hooks = setupApplicationTest();
   setupTest();
   setupWindowMock(hooks);
+
+  before(function() {
+    // Testing for before
+  });
+
+  beforeEach(function() {
+    // Testing for beforeEach with hooks
+  });
 
   context('Context test turns to module', function() {
 
@@ -568,6 +570,31 @@ describe('Integration | Component', function() {
       // Will this be a problem
       done();
     });
+
+    [{
+      test: '', result: '',
+    }].forEach(({ test, result }) => {
+      it(`Expect ${test} a nested block`, function() {
+        expect(result).to.be.true;
+      });
+    });
+  });
+});
+
+describe('Integration | Component test', function() {
+  setupTest();
+
+  describe('Integration | Component test', function() {
+
+    describe('foo', function() {
+      beforeEach(function () {
+        const foo = 'bar';
+      });
+
+      it('Testing await done', async function() {
+        expect(false).not.equal(true);
+      });
+    });
   });
 });
 
@@ -608,6 +635,14 @@ module('Integration | Component', function(hooks) {
   setupApplicationTest(hooks);
   setupTest(hooks);
   setupWindowMock(hooks);
+
+  hooks.before(function() {
+    // Testing for before
+  });
+
+  hooks.beforeEach(function() {
+    // Testing for beforeEach with hooks
+  });
 
   module('Context test turns to module', function(hooks) {
 
@@ -679,6 +714,120 @@ module('Integration | Component', function(hooks) {
         assert.equal(item, true);
       });
     });
+
+    [{
+      test: '', result: '',
+    }].forEach(({ test, result }) => {
+      test(`Expect ${test} a nested block`, function(assert) {
+        assert.equal(result, true);
+      });
+    });
+  });
+});
+
+module('Integration | Component test', function(hooks) {
+  setupTest(hooks);
+
+  module('Integration | Component test', function() {
+
+    module('foo', function(hooks) {
+      hooks.beforeEach(function () {
+        const foo = 'bar';
+      });
+
+      test('Testing await done', async function(assert) {
+        assert.notEqual(false, true);
+      });
+    });
+  });
+});
+
+```
+---
+<a id="module-hooks">**module-hooks**</a>
+
+**Input** (<small>[module-hooks.input.js](transforms/mocha-to-qunit/__testfixtures__/module-hooks.input.js)</small>):
+```js
+import { describe, it, context, beforeEach, afterEach, before, after } from 'mocha';
+
+describe('Integration | Component test', function() {
+  setupTest();
+
+  describe('Integration | Component test', function() {
+
+    describe('foo', function() {
+      beforeEach(function () {
+        const foo = 'bar';
+      });
+
+      it('Testing await done', async function() {
+        expect(false).not.equal(true);
+      });
+    });
+
+    describe('foo2', function() {
+
+      beforeEach(function () {
+        const foo = 'bar';
+      });
+
+      it('Testing await done', async function() {
+        expect(false).not.equal(true);
+      });
+
+      describe('foo3', function() {
+        beforeEach(function () {
+          const foo = 'bar';
+        });
+
+        it('Testing await done', async function() {
+          expect(false).not.equal(true);
+        });
+      });
+    });
+  });
+});
+```
+
+**Output** (<small>[module-hooks.output.js](transforms/mocha-to-qunit/__testfixtures__/module-hooks.output.js)</small>):
+```js
+import { module, test } from 'qunit';
+
+module('Integration | Component test', function(hooks) {
+  setupTest(hooks);
+
+  module('Integration | Component test', function() {
+
+    module('foo', function(hooks) {
+      hooks.beforeEach(function () {
+        const foo = 'bar';
+      });
+
+      test('Testing await done', async function(assert) {
+        assert.notEqual(false, true);
+      });
+    });
+
+    module('foo2', function(hooks) {
+
+      hooks.beforeEach(function () {
+        const foo = 'bar';
+      });
+
+      test('Testing await done', async function(assert) {
+        assert.notEqual(false, true);
+      });
+
+      module('foo3', function(hooks) {
+        hooks.beforeEach(function () {
+          const foo = 'bar';
+        });
+
+        test('Testing await done', async function(assert) {
+          assert.notEqual(false, true);
+        });
+      });
+    });
   });
 });
 
@@ -689,7 +838,8 @@ module('Integration | Component', function(hooks) {
 **Input** (<small>[plain-expect.input.js](transforms/mocha-to-qunit/__testfixtures__/plain-expect.input.js)</small>):
 ```js
 it('Method with return expression', function() {
-  expect(currentURL(), 'Url page', '/url/param');
+  expect(currentURL());
+  expect('toto');
 });
 
 // Input
@@ -717,7 +867,8 @@ it('Method with return expression', function() {
 **Output** (<small>[plain-expect.output.js](transforms/mocha-to-qunit/__testfixtures__/plain-expect.output.js)</small>):
 ```js
 test('Method with return expression', function(assert) {
-  expect(currentURL(), 'Url page', '/url/param');
+  assert.ok(currentURL());
+  assert.ok('toto');
 });
 
 // Input
@@ -742,67 +893,55 @@ test('Method with return expression', function(assert) {
 
 ```
 ---
-<a id="test-describe-skip">**test-describe-skip**</a>
+<a id="sinon-assert">**sinon-assert**</a>
 
+**Input** (<small>[sinon-assert.input.js](transforms/mocha-to-qunit/__testfixtures__/sinon-assert.input.js)</small>):
 ```js
-import { describe, it, context } from 'mocha';
+import {  context } from 'mocha';
 
-// All the tests need to be skipped
-describe.skip('Integration | Component', function() {
+describe('Integration | Component', function() {
+  it('basic expect statements', async function() {
+    const toto = 'ma superbe variable';
 
-  it('Defination of the test', function() {
-    // ...
+    await maFonction();
+
+    sinon.assert.calledOnce(stub);
+    sinon.assert.calledOnce(stub2);
   });
 
-  it.skip('Defination of the test', function() {
-    // ...
-  });
+  it('basic expect statements', async function() {
+    const toto = 'ma superbe variable';
 
-  context('Context test turns to module', function() {
-    // ...
+    await maFonction();
 
-    it('Defination of the test', function() {
-      // ...
-    });
-  });
-
-  context.skip('Context test turns to module', function() {
-
-    it('Defination of the skipped test', function() {
-      // ...
-    });
+    sinon.assert.calledOnce(stub2);
   });
 });
 
 ```
 
+**Output** (<small>[sinon-assert.output.js](transforms/mocha-to-qunit/__testfixtures__/sinon-assert.output.js)</small>):
 ```js
-import { module, skip } from 'qunit';
+import { module, test } from 'qunit';
 
-// All the tests need to be skipped
 module('Integration | Component', function() {
+  test('basic expect statements', async function(assert) {
+    const toto = 'ma superbe variable';
 
-  skip('Defination of the test', function() {
-    // ...
+    await maFonction();
+
+    sinon.assert.calledOnce(stub);
+    sinon.assert.calledOnce(stub2);
+    assert.ok(true);
   });
 
-  skip('Defination of the test', function() {
-    // ...
-  });
+  test('basic expect statements', async function(assert) {
+    const toto = 'ma superbe variable';
 
-  module('Context test turns to module', function() {
-    // ...
+    await maFonction();
 
-    skip('Defination of the test', function() {
-      // ...
-    });
-  });
-
-  module('Context test turns to module', function() {
-
-    skip('Defination of the skipped test', function() {
-      // ...
-    });
+    sinon.assert.calledOnce(stub2);
+    assert.ok(true);
   });
 });
 
@@ -881,6 +1020,79 @@ module('Integration | Component', function() {
     skip('Defination of the skipped test', function() {
       // ...
     });
+  });
+});
+
+```
+---
+<a id="throw">**throw**</a>
+
+**Input** (<small>[throw.input.js](transforms/mocha-to-qunit/__testfixtures__/throw.input.js)</small>):
+```js
+import { expect } from 'chai';
+import { describe, it, context } from 'mocha';
+import { setupTest, setupApplicationTest } from '@freshdesk/test-helpers';
+
+describe('Integration | Component', function() {
+  let hooks = setupApplicationTest();
+  setupTest();
+
+  it('Contains expects throw', function() {
+    expect(areas.map((area) => area.get('code'))).to.deep.equal([1, 2]);
+    expect(() => parseISODateOnly(dateStringWithInvertedDayAndMonth)).to.throw();
+  });
+});
+
+```
+
+**Output** (<small>[throw.output.js](transforms/mocha-to-qunit/__testfixtures__/throw.output.js)</small>):
+```js
+import { module, test } from 'qunit';
+import { setupTest, setupApplicationTest } from '@freshdesk/test-helpers';
+
+module('Integration | Component', function(hooks) {
+  setupApplicationTest(hooks);
+  setupTest(hooks);
+
+  test('Contains expects throw', function(assert) {
+    assert.deepEqual(areas.map((area) => area.get('code')), [1, 2]);
+    assert.throws(() => parseISODateOnly(dateStringWithInvertedDayAndMonth));
+  });
+});
+
+```
+---
+<a id="timeout">**timeout**</a>
+
+**Input** (<small>[timeout.input.js](transforms/mocha-to-qunit/__testfixtures__/timeout.input.js)</small>):
+```js
+import { describe, it, context } from 'mocha';
+
+describe('Integration | Component', function() {
+  it('basic expect statements', async function() {
+    this.timeout(500);
+    const toto = 'ma superbe variable';
+
+    await maFonction();
+
+    expect(true).to.be.true;
+  });
+});
+
+```
+
+**Output** (<small>[timeout.output.js](transforms/mocha-to-qunit/__testfixtures__/timeout.output.js)</small>):
+```js
+import { module, test } from 'qunit';
+
+module('Integration | Component', function() {
+  test('basic expect statements', async function(assert) {
+    assert.timeout(500);
+    const toto = 'ma superbe variable';
+
+    await maFonction();
+
+    assert.equal(true, true);
   });
 });
 
